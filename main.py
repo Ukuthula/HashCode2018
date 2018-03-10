@@ -93,6 +93,27 @@ def sortListByBeginTime(rideList):
     else:  # You need to hande the part at the end of the recursion - when you only have one element in your array, just return the array.
         return rideList
 
+def sortListByEndTime(rideList):
+    ##
+    less = []
+    equal = []
+    greater = []
+
+    if len(rideList) > 1:
+        pivot = rideList[0][3]
+        for ride in rideList:
+            if ride[3] < pivot:
+                less.append(ride)
+            if ride[3] == pivot:
+                equal.append(ride)
+            if ride[3] > pivot:
+                greater.append(ride)
+        # Don't forget to return something!
+        return sortListByBeginTime(less)+equal+sortListByBeginTime(greater)  # Just use the + operator to join lists
+    # Note that you want equal ^^^^^ not pivot
+    else:  # You need to hande the part at the end of the recursion - when you only have one element in your array, just return the array.
+        return rideList
+
 def timeToReachStart(ride):
     timeAvailable = ride[3] - ride [2] - distanceCalc(ride[0], ride[1]) - 1
     return timeAvailable
@@ -142,7 +163,7 @@ print(distanceCalc(ridesList[0][0], ridesList[0][1]))
 #print(sortedDistanceList)
 #print(sortedDistanceList[0][0][0])
 
-sortedTimeList = sortListByBeginTime(purifiedList)
+sortedTimeList = sortListByEndTime(purifiedList)
 # print(sortedTimeList)
 print(sortedTimeList[0][0][0])
 
@@ -156,6 +177,8 @@ for id in range(vehicles):
 # print(carList)
 
 ###### Assign the rides to each car
+# for car in carList:
+    # sortedTimeList = car.takeNextRide(sortedTimeList)
 
 for car in carList:
     while car.available:

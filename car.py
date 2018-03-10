@@ -20,6 +20,12 @@ class Car:
 
         return distance
 
+    def getDistCarRide(self, ride):
+        '''
+        Return the distance between the car and the starting point of the ride.
+        '''
+        return self.distanceCalc((self.pos_x, self.pos_y), ride[0])
+
     def reachable(self, ride):
         '''
         Checks if a ride can be done in time.
@@ -28,6 +34,14 @@ class Car:
         pathToFinish = self.distanceCalc(ride[0], ride[1])
 
         return self.currentTime + pathToStart + pathToFinish < ride[3]
+
+    def reachable2(self, ride):
+        '''
+        Checks if a ride can be done in time.
+        '''
+        pathToStart = self.distanceCalc((self.pos_x, self.pos_y), ride[0])
+
+        return self.currentTime + pathToStart < ride[2]
 
     def getIoNextRide(self, ridesList):
         '''
@@ -38,6 +52,32 @@ class Car:
             if self.reachable(ridesList[count]):
                 index = count
                 break
+
+        return index
+
+    def getIoNextRideB(self, ridesList):
+        '''
+        Gets the index of the next possible bonus ride:
+        '''
+        index = []
+        for count in range(len(ridesList)):
+            if self.reachable2(ridesList[count]):
+                index = count
+                break
+
+        return index
+        
+    def getIoNextRideClosest(self, ridesList):
+        '''
+        Gets the index of the next possible and closest ride:
+        '''
+        index = []
+        currentclosest = 999999999999
+        for count in range(len(ridesList)):
+            distanceToStart = self.getDistCarRide(ridesList[count])
+            if self.reachable(ridesList[count]) and distanceToStart < currentclosest:
+                index = count
+                currentclosest = self.getDistCarRide(ridesList[count])
 
         return index
 
@@ -54,7 +94,7 @@ class Car:
         '''
         Takes the next possible ride in ridesList and sets sef.available false, when no ride is possible
         '''
-        index = self.getIoNextRide(ridesList)
+        index = self.getIoNextRideClosest(ridesList)
         if index == []:
             self.available = False
             return ridesList
